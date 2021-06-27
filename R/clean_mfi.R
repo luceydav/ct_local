@@ -11,20 +11,6 @@ clean_mfi <- function(dt) {
       unique(dt, fromLast = TRUE, 
              by = c("fisc_year_end", "municipality"))
     
-    # Function to remove "()" and convert to integer used for all segments
-    convert_integer <- function(cell) {
-      
-      if( !is.na(cell) ) {
-        
-        cell <- 
-          as.integer(str_replace(str_replace_all(cell, "[),]", ""), "\\(", "-"))
-        
-      } else {
-        
-        cell <- NA_integer_
-      }
-      return(cell)
-    }
     dt[, unrestricted_net_assets :=
          sapply(unrestricted_net_assets, convert_integer)]
     
@@ -43,39 +29,37 @@ clean_mfi <- function(dt) {
         "net_invstmnt_in_capital_assets",
         "invested_in_capital_assets_net_of_related_debt"
       )
+    
     dt[, `:=`(
-      population = fcoalesce(x_population, population),
-      nonspendable_fund_bal = fcoalesce(x_nonspendable_fund_bal, nonspendable_fund_bal),
+      population = fcoalesce(x_population, as.integer(population)),
+      nonspendable_fund_bal = fcoalesce(x_nonspendable_fund_bal, as.integer(nonspendable_fund_bal)),
       restricted_fund_bal = fcoalesce(x_restricted_fund_bal, as.integer(restricted_fund_bal)),
       committed_fund_bal = fcoalesce(x_committed_fund_bal, as.integer(committed_fund_bal)),
       assigned_fund_bal = fcoalesce(x_assigned_fund_bal, as.integer(assigned_fund_bal)),
-      unrestricted_net_position = 
+      unrestricted_net_position =
         fcoalesce(unrestricted_net_assets,
                   unrestricted_net_position,
-                  unrestricted_fund_bal),
-      curr_year_tax_collection_rate = fcoalesce(
-        curr_year_tax_collection_rate,
-        curr_year_tax_collection
-      ),
-      overal_total_tax_collection_rate = fcoalesce(
-        overal_total_tax_collection_rate,
-        overal_total_tax_coll_rate
-      ),
-      total_bonded_long_term_debt_rsd_town = fcoalesce(
-        as.integer(total_bonded_long_term_debt_rsd_town),
-        tot_bnd_lng_tr_det_rsd_town
-      ), 
+                  as.integer(unrestricted_fund_bal)),
+      curr_year_tax_collection_rate = 
+        fcoalesce(curr_year_tax_collection_rate,
+                  curr_year_tax_collection),
+      overal_total_tax_collection_rate = 
+        fcoalesce(overal_total_tax_collection_rate,
+                  overal_total_tax_coll_rate),
+      total_bonded_long_term_debt_rsd_town = 
+        fcoalesce(as.integer(
+          total_bonded_long_term_debt_rsd_town),
+          as.integer(tot_bnd_lng_tr_det_rsd_town)),
       net_investment_in_capital_assets = fcoalesce(
         net_investment_in_capital_assets,
         invested_in_capital_assets_net_of_related_debt,
-        net_invstmnt_in_capital_assets
-      )
-      )][, (drops) := NULL]
+        as.integer(net_invstmnt_in_capital_assets))
+    )][, (drops) := NULL]
     
     # Clean duplicate variables in mfi
     change_in_net_assets <-
       names(dt)[stringr::str_detect(names(dt), "change") &
-                      stringr::str_detect(names(dt), "net")]
+                  stringr::str_detect(names(dt), "net")]
     dt <-
       dt[, change_in_net_assets := apply(.SD, 1, function(x)
         na.omit(x)[1]),

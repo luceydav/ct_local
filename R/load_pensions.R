@@ -50,38 +50,38 @@ load_pension <- function(){
   #Coalesce variables which have different names in different annual tables
   ct_mfi_pension <-
     ct_mfi_pension[, `:=`
-                   ( emplyr_cont_req =
-                       as.numeric(
-                         fcoalesce(req_d_emplyr_contrib,
-                                   emplyr_required_adc_gasb67,
-                                   emplyr_required_adc)
-                       ),
-                     emplyr_cont_made =
-                       as.numeric(
-                         fcoalesce(emplyr_contrib_made,
-                                   emplyr_contribution_gasb67,
-                                   emplyr_contribution)
-                       ),
-                     pension_net_ass =
-                       as.numeric(
-                         fcoalesce(
-                           gasb5_net_assets,
-                           gasb27_asset_value,
-                           plan_fiduciary_net_position_gasb6768,
-                           plan_fiduciary_net_position
-                         )
-                       ),
-                     pension_liab = as.numeric(
-                       fcoalesce(gasb27_aal,
-                                 total_pension_liability_gasb6768,
-                                 total_pension_liability)
-                     ),
-                     number_of_members = as.numeric(number_of_members),
-                     inv_returns = fcoalesce(
-                       as.numeric(investment_rate_of_return_gasb6768),
-                       investment_rate_of_return),
-                     municipality = str_to_title(municipality)
-                   )]
+      ( emplyr_cont_req =
+          as.numeric(
+            fcoalesce(req_d_emplyr_contrib,
+                      emplyr_required_adc_gasb67,
+                      emplyr_required_adc)
+          ),
+        emplyr_cont_made =
+          as.numeric(
+            fcoalesce(emplyr_contrib_made,
+                      emplyr_contribution_gasb67,
+                      emplyr_contribution)
+          ),
+        pension_net_ass =
+          as.numeric(
+            fcoalesce(
+              gasb5_net_assets,
+              gasb27_asset_value,
+              plan_fiduciary_net_position_gasb6768,
+              plan_fiduciary_net_position
+            )
+          ),
+        pension_liab = as.numeric(
+          fcoalesce(gasb27_aal,
+                    total_pension_liability_gasb6768,
+                    total_pension_liability)
+        ),
+        number_of_members = as.numeric(number_of_members),
+        inv_returns = fcoalesce(
+          as.numeric(investment_rate_of_return_gasb6768),
+          investment_rate_of_return),
+        municipality = str_to_title(municipality)
+      )]
   
   #Select cols to keep
   cols <- c(
@@ -95,7 +95,6 @@ load_pension <- function(){
     "inv_returns"
   )
   ct_mfi_pension <- ct_mfi_pension[, ..cols]
-  
   
   #Aggregate numeric by town/year
   cols <- c(
