@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 ## Analysis of State of CT open mfi, pension and opeb data
 
@@ -21,3 +22,7 @@ used in the Shiny app (yankee_shiny). See the blogpost for further detail:
 # Shiny App
 The yankee_shiny folder contains a Shiny app used in Replicating Yankee Institute blogpost.
 
+=======
+# ct_local
+State of CT open mfi, pension and opeb ETL, and Shiny app of municipal risk over time
+>>>>>>> 36cc3dc9c207863dec25aa578d84d86a6f6be79e
