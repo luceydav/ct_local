@@ -10,7 +10,7 @@ get_median_real_estate <- function() {
     # Filter for single family and select variables
     ct_re <- 
       ct_re[property_type == "Single Family"][
-            ][(non_use_code == "0" | is.na(non_use_code))]
+            ][(non_use_code %chin% c("", "0") | is.na(non_use_code))]
     
     # Replace some missing SalesAmount when SalesRatio is available
     #ct_re[is.na(SaleAmount), SaleAmount := AssessedValue / SalesRatio]
@@ -38,6 +38,16 @@ get_median_real_estate <- function() {
       ct_re[Municipality %in% missing_munis & 
               `Fiscal Year` == "2017"]
     missing_year$`Fiscal Year` <- "2018"
+    
+    # If missing 2019, add 2018
+    munis <- unique(ct_re$Municipality)
+    missing_munis <- 
+      setdiff(munis, unique(ct_re[`Fiscal Year` == "2019", Municipality]))
+    missing_year <-
+      ct_re[Municipality %in% missing_munis & 
+              `Fiscal Year` == "2018"]
+    missing_year$`Fiscal Year` <- "2019"
+    
     ct_re <- rbind(ct_re, missing_year)
     
     return(ct_re)
