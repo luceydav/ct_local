@@ -7,7 +7,6 @@ library(glue)
 
 #Load data
 yankee <- readRDS("data/yankee.RDS")
-yankee <- as.data.table(yankee)
 
 # Plot function
 source("R/map_score.R")

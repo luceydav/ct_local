@@ -15,6 +15,11 @@ build_yankee <- function(data){
     # ct_mfi_opeb, ct_re on `Fiscal Year` and `Municipality`
     yankee <-
       ct_mfi_pension_DT[ct_mfi_DT, on = c("Fiscal Year", "Municipality")]
+    yankee[, `Net Pension Liab.` := fifelse(
+      is.na(`Net Pension Liab.`),
+      fcoalesce(`Net Pension Liab.`, `i.Net Pension Liab.`),
+      `Net Pension Liab.`)]
+    yankee[, `i.Net Pension Liab.` := NULL]
     yankee <-
       ct_mfi_opeb_DT[yankee, on = c("Fiscal Year", "Municipality")]
     yankee <-
@@ -42,7 +47,7 @@ build_yankee <- function(data){
     )]
     
     #Add score calc using calc_combo function by year in yankee list
-    year <- as.character(c(2001:2018))
+    year <- as.character(c(2001:2019))
     yankee_list <- yankee[, list(list(.SD)), by = "Fiscal Year"]
     yankee <- lapply(yankee_list$V1, calc_combo)
     names(yankee) <- year

@@ -1,10 +1,11 @@
 #Plot function
 map_score <- function(dt, muni){
   
-  frame <- dt[`Fiscal Year` %in% as.character(c(2004:2018)),
-                  .SD,.SDcols=patterns("Score|Muni|Year")][
-                  ][,melt(.SD, measure.vars=patterns("Score"))][
-                  ][!is.na(value)]
+  frame <- 
+    dt[`Fiscal Year` %in% as.character(c(2004:2019)),
+       .SD, .SDcols = patterns("Score|Muni|Year")][
+       ][, melt(.SD, measure.vars = patterns("Score"))][
+        ][!is.na(value)]
   
   town <- frame[Municipality == muni]
   
